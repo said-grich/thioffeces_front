@@ -1,0 +1,307 @@
+<div class="bg-light min-vh-100 d-flex flex-row align-items-center">
+  <c-container>
+    <c-row class="justify-content-center">
+      <c-col md="8">
+        <c-card-group>
+          <c-card class="p-4">
+            <c-card-body>
+              <form
+                cForm cRow
+                class="needs-validation"
+                [formGroup]="userForm" (ngSubmit)="onSubmit()">
+                <h1>Register</h1>
+                <p class="text-medium-emphasis">Create an account</p>
+
+                <c-input-group class="mb-3" *ngIf="userForm.controls['name'] as ctrl">
+                  <span cInputGroupText>
+                    <svg cIcon name="cilPeople"></svg>
+                  </span>
+                  <input
+                    cFormControl
+                    id="fullname"
+                    formControlName="name"
+                    placeholder="Full name"
+                    autocomplete="off"
+                    required
+                    [autofocus]="true"
+                    [valid]="
+              ctrl.touched && ctrl.valid
+                ? true
+                : (submitted || ctrl.touched) && ctrl.invalid
+                ? false
+                : undefined
+            "
+                  />
+                  <c-form-feedback *ngIf="submitted || ctrl.invalid" [valid]="!(submitted || ctrl.invalid)">
+                    <ng-container *ngIf="ctrl.errors as errors">
+                      <div *ngIf="errors.required">{{formErrors["name"]["required"]}}</div>
+                    </ng-container>
+                  </c-form-feedback>
+
+                </c-input-group>
+
+                <c-input-group class="mb-3" *ngIf="userForm.controls['phone_number'] as ctrl">
+                  <span style="width: 100px ; " *ngIf="userForm.controls['country_code'] as ctrl2">
+                    <select aria-label="Select country code" formControlName="country_code" cSelect  style="border-top-right-radius: 0px ; border-bottom-right-radius:0 "
+
+                            [autofocus]="true"
+                            [valid]="
+              ctrl2.touched && ctrl2.valid
+                ? true
+                : (submitted || ctrl2.touched) && ctrl2.invalid
+                ? false
+                : undefined
+            "
+                    >
+                      <option *ngFor="let country of codes" [ngValue]="country.countryCodes[0]">{{country.isoCode2}}
+                                  ({{country.countryCodes[0]}})</option>
+                    </select>
+                  </span>
+                  <input name="phone_number" cFormControl formControlName="phone_number" placeholder="Phone number"
+                         required
+                         [autofocus]="true"
+                         [valid]="
+              ctrl.touched && ctrl.valid
+                ? true
+                : (submitted || ctrl.touched) && ctrl.invalid
+                ? false
+                : undefined
+            "
+
+                  />
+
+                  <c-form-feedback *ngIf="submitted || ctrl.invalid" [valid]="!(submitted || ctrl.invalid)">
+
+
+                    <ng-container *ngIf="ctrl.errors as errors">
+                      <div *ngIf="errors.required">{{formErrors["phoneNumber"]["required"]}}</div>
+                    </ng-container>
+                    <ng-container *ngIf="ctrl.errors as errors">
+                      <div *ngIf="errors.pattern">{{formErrors["phoneNumber"]["pattern"]+"\n" }}{{formErrors["phoneNumber"]["minLength"]}}</div>
+                    </ng-container>
+
+
+                  </c-form-feedback>
+
+                </c-input-group>
+
+
+
+
+                <c-input-group class="mb-3" *ngIf="userForm.controls['email'] as ctrl">
+                  <span cInputGroupText>
+                    <svg cIcon name="cilEnvelopeClosed"></svg>
+                  </span>
+                  <input name="email" formControlName="email" cFormControl placeholder="Email"
+                         [autofocus]="true"
+                         [valid]="
+              ctrl.touched && ctrl.valid
+                ? true
+                : (submitted || ctrl.touched) && ctrl.invalid
+                ? false
+                : undefined
+            "
+                  />
+                  <c-form-feedback *ngIf="submitted || ctrl.invalid" [valid]="!(submitted || ctrl.invalid)">
+                  <ng-container *ngIf="ctrl.errors as errors">
+                    <div *ngIf="errors.required">                   {{formErrors["email"]["required"]}}</div>
+                  </ng-container>
+                  <ng-container *ngIf="ctrl.errors as errors">
+                    <div *ngIf="errors.pattern">{{formErrors["email"]["email"]}}</div>
+                  </ng-container>
+                  </c-form-feedback>
+                </c-input-group>
+
+
+
+
+
+                <c-input-group class="mb-3" *ngIf="userForm.controls['user_type'] as ctrl">
+                  <c-form-check class="col-4">
+                    <input cFormCheckInput id="radioStack2" type="radio" name="user_type" value="customer"
+                           formControlName="user_type"
+                           [autofocus]="true"
+                           [valid]="
+              ctrl.touched && ctrl.valid
+                ? true
+                : (submitted || ctrl.touched) && ctrl.invalid
+                ? false
+                : undefined
+            "
+                    />
+                    <label cFormCheckLabel for="radioStack2">Customer</label>
+                  </c-form-check>
+
+                  <c-form-check class="col-4">
+                    <input cFormCheckInput checked id="staff-radio" type="radio" name="user_type" value="staff"
+                           formControlName="user_type" [autofocus]="true"
+                           [valid]="
+              ctrl.touched && ctrl.valid
+                ? true
+                : (submitted || ctrl.touched) && ctrl.invalid
+                ? false
+                : undefined
+            "/>
+                    <label cFormCheckLabel for="staff-radio">Staff</label>
+                  </c-form-check>
+
+
+                  <c-form-check class="col-4">
+                    <input cFormCheckInput id="owner-radio" type="radio" name="user_type" value="owner"
+                           formControlName="user_type" [autofocus]="true"
+                           [valid]="
+              ctrl.touched && ctrl.valid
+                ? true
+                : (submitted || ctrl.touched) && ctrl.invalid
+                ? false
+                : undefined
+            "/>
+                    <label cFormCheckLabel for="owner-radio">Owner</label>
+
+                  </c-form-check>
+
+                  <c-form-feedback *ngIf="submitted || ctrl.invalid" [valid]="!(submitted || ctrl.invalid)">
+                    <ng-container *ngIf="ctrl.errors as errors">
+                      <div *ngIf="errors.required">User Type is Required !</div>
+                    </ng-container>
+
+                  </c-form-feedback>
+                </c-input-group>
+
+
+                <c-input-group class="mb-3"  *ngIf="userForm.controls['password'] as ctrl">
+                  <span cInputGroupText>
+                    <svg cIcon name="cilLockLocked"></svg>
+                  </span>
+                  <input
+                    name="password"
+                    formControlName="password"
+                    cFormControl
+                    placeholder="Password"
+                    type="password"
+
+                    [autofocus]="true"
+                    [valid]="
+              ctrl.touched && ctrl.valid
+                ? true
+                : (submitted || ctrl.touched) && ctrl.invalid
+                ? false
+                : undefined
+            "
+                  />
+                  <c-form-feedback *ngIf="submitted || ctrl.invalid" [valid]="!(submitted || ctrl.invalid)">
+                    <ng-container *ngIf="ctrl.errors as errors">
+                      <div *ngIf="errors?.required">Password is required</div>
+                      <div *ngIf="errors?.minlength">
+                        {{ formErrors['password'].minLength }}
+                      </div>
+                      <div *ngIf="errors.pattern">
+                        {{ formErrors['password'].pattern }}
+                      </div>
+                    </ng-container>
+                  </c-form-feedback>
+                </c-input-group>
+
+                <c-input-group class="mb-4"  *ngIf="userForm.controls['confirm_password'] as ctrl">
+                  <span cInputGroupText>
+                    <svg cIcon name="cilLockLocked"></svg>
+                  </span>
+                  <input
+                    name="confirm_password"
+                    formControlName="confirm_password"
+                    autoComplete="new-password"
+                    cFormControl
+                    placeholder="Confirm password"
+                    type="password"
+                    [autofocus]="true"
+                    [valid]="
+              ctrl.touched && ctrl.valid
+                ? true
+                : (submitted || ctrl.touched) && ctrl.invalid
+                ? false
+                : undefined"
+                  />
+                  <c-form-feedback *ngIf="submitted || ctrl.invalid" [valid]="!(submitted || ctrl.invalid)">
+                    <ng-container *ngIf="ctrl.errors as errors">
+                      <div *ngIf="errors?.passwordMismatch">
+                        {{ formErrors['confirmPassword'].passwordMismatch}}
+                      </div>
+                      <div *ngIf="errors?.required">Confirmation is required</div>
+                    </ng-container>
+                  </c-form-feedback>
+                </c-input-group>
+
+                <c-input-group class="mb-3" *ngIf="userForm.controls['id_number'] as ctrl">
+                  <span cInputGroupText>
+                    <svg cIcon name="cilEnvelopeClosed"></svg>
+                  </span>
+                  <input name="id_number" formControlName="id_number" cFormControl placeholder="Identity number"
+                         [autofocus]="true"
+                         [valid]="
+              ctrl.touched && ctrl.valid
+                ? true
+                : (submitted || ctrl.touched) && ctrl.invalid
+                ? false
+                : undefined
+            "/>
+                </c-input-group>
+
+                <c-input-group class="mb-3" *ngIf="userForm.controls['phone_number'] as ctrl">
+                  <span cInputGroupText>
+                    <svg cIcon name="cilEnvelopeClosed"></svg>
+                  </span>
+                  <input name="address" cFormControl formControlName="address" placeholder="Address"
+                         [autofocus]="true"
+                         [valid]="
+              ctrl.touched && ctrl.valid
+                ? true
+                : (submitted || ctrl.touched) && ctrl.invalid
+                ? false
+                : undefined
+            "
+                  />
+                </c-input-group>
+                <c-row class="mb-1">
+                  <c-col *ngIf="userForm.controls['accept'] as ctrl">
+                    <c-form-check>
+                      <input
+                        cFormCheckInput
+                        type="checkbox"
+                        id="accept"
+                        formControlName="accept"
+                        required
+                        [valid]="ctrl.valid ? true : submitted && ctrl.invalid ? false : undefined"
+                      />
+                      <label cFormCheckLabel custom for="accept">I accept the terms of use</label>
+                      <c-form-feedback *ngIf="submitted && ctrl.invalid" [valid]="false">
+                        <ng-container *ngIf="ctrl.errors as errors">
+                          <div *ngIf="errors.required">You have to accept our Terms and Conditions</div>
+                        </ng-container>
+                      </c-form-feedback>
+                    </c-form-check>
+                  </c-col>
+                </c-row>
+                <button cButton class="px-4" color="primary" type="submit">
+                  Register
+                </button>
+              </form>
+            </c-card-body>
+          </c-card>
+          <c-card [ngStyle]="{'width.%': 44}" class="text-white bg-primary py-5">
+            <c-card-body class="text-center">
+              <div>
+                <h2>Login</h2>
+                <p>
+                  Already have an account? Log in here.
+                </p>
+                <button [active]="true" cButton class="mt-3" color="primary" routerLink="/login">
+                  Login
+                </button>
+              </div>
+            </c-card-body>
+          </c-card>
+        </c-card-group>
+      </c-col>
+    </c-row>
+  </c-container>
+</div>
