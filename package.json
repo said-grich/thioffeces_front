@@ -3,10 +3,11 @@
   "version": "4.3.10",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "node server.js",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "heroku-postbuild": "ng build --prod"
   },
   "private": true,
   "dependencies": {
@@ -34,8 +35,10 @@
     "@ngrx/store-devtools": "^15.4.0",
     "chart.js": "^3.9.1",
     "country-calling-code": "^0.0.3",
+    "express": "^4.18.2",
     "google-libphonenumber": "^3.2.32",
     "ngx-perfect-scrollbar": "^10.1.1",
+    "path": "^0.12.7",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.12.0"

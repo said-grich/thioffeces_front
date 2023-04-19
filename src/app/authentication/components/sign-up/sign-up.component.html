@@ -1,3 +1,7 @@
+<div class="overlay-spinner" *ngIf="(isLoading$ | async)">
+  <c-spinner></c-spinner>
+</div>
+
 <div class="bg-light min-vh-100 d-flex flex-row align-items-center">
   <c-container>
     <c-row class="justify-content-center">
@@ -5,6 +9,14 @@
         <c-card-group>
           <c-card class="p-4">
             <c-card-body>
+
+
+              <c-alert
+                color="danger"
+                fade
+                *ngIf="(error$ | async)  as errors">
+                <p *ngFor="let error of errors">{{ error }}</p>
+              </c-alert>
               <form
                 cForm cRow
                 class="needs-validation"
@@ -23,6 +35,7 @@
                     placeholder="Full name"
                     autocomplete="off"
                     required
+
                     [autofocus]="true"
                     [valid]="
               ctrl.touched && ctrl.valid
@@ -42,7 +55,8 @@
 
                 <c-input-group class="mb-3" *ngIf="userForm.controls['phone_number'] as ctrl">
                   <span style="width: 100px ; " *ngIf="userForm.controls['country_code'] as ctrl2">
-                    <select aria-label="Select country code" formControlName="country_code" cSelect  style="border-top-right-radius: 0px ; border-bottom-right-radius:0 "
+                    <select aria-label="Select country code" formControlName="country_code" cSelect
+                            style="border-top-right-radius: 0px ; border-bottom-right-radius:0 "
 
                             [autofocus]="true"
                             [valid]="
@@ -54,7 +68,7 @@
             "
                     >
                       <option *ngFor="let country of codes" [ngValue]="country.countryCodes[0]">{{country.isoCode2}}
-                                  ({{country.countryCodes[0]}})</option>
+                        ({{country.countryCodes[0]}})</option>
                     </select>
                   </span>
                   <input name="phone_number" cFormControl formControlName="phone_number" placeholder="Phone number"
@@ -77,15 +91,14 @@
                       <div *ngIf="errors.required">{{formErrors["phoneNumber"]["required"]}}</div>
                     </ng-container>
                     <ng-container *ngIf="ctrl.errors as errors">
-                      <div *ngIf="errors.pattern">{{formErrors["phoneNumber"]["pattern"]+"\n" }}{{formErrors["phoneNumber"]["minLength"]}}</div>
+                      <div
+                        *ngIf="errors.pattern">{{formErrors["phoneNumber"]["pattern"] + "\n" }}{{formErrors["phoneNumber"]["minLength"]}}</div>
                     </ng-container>
 
 
                   </c-form-feedback>
 
                 </c-input-group>
-
-
 
 
                 <c-input-group class="mb-3" *ngIf="userForm.controls['email'] as ctrl">
@@ -103,22 +116,19 @@
             "
                   />
                   <c-form-feedback *ngIf="submitted || ctrl.invalid" [valid]="!(submitted || ctrl.invalid)">
-                  <ng-container *ngIf="ctrl.errors as errors">
-                    <div *ngIf="errors.required">                   {{formErrors["email"]["required"]}}</div>
-                  </ng-container>
-                  <ng-container *ngIf="ctrl.errors as errors">
-                    <div *ngIf="errors.pattern">{{formErrors["email"]["email"]}}</div>
-                  </ng-container>
+                    <ng-container *ngIf="ctrl.errors as errors">
+                      <div *ngIf="errors.required">                   {{formErrors["email"]["required"]}}</div>
+                    </ng-container>
+                    <ng-container *ngIf="ctrl.errors as errors">
+                      <div *ngIf="errors.pattern">{{formErrors["email"]["email"]}}</div>
+                    </ng-container>
                   </c-form-feedback>
                 </c-input-group>
 
 
-
-
-
                 <c-input-group class="mb-3" *ngIf="userForm.controls['user_type'] as ctrl">
                   <c-form-check class="col-4">
-                    <input cFormCheckInput id="radioStack2" type="radio" name="user_type" value="customer"
+                    <input cFormCheckInput id="radioStack2" type="radio" name="user_type" value="Customer"
                            formControlName="user_type"
                            [autofocus]="true"
                            [valid]="
@@ -133,7 +143,7 @@
                   </c-form-check>
 
                   <c-form-check class="col-4">
-                    <input cFormCheckInput checked id="staff-radio" type="radio" name="user_type" value="staff"
+                    <input cFormCheckInput checked id="staff-radio" type="radio" name="user_type" value="Staff"
                            formControlName="user_type" [autofocus]="true"
                            [valid]="
               ctrl.touched && ctrl.valid
@@ -147,7 +157,7 @@
 
 
                   <c-form-check class="col-4">
-                    <input cFormCheckInput id="owner-radio" type="radio" name="user_type" value="owner"
+                    <input cFormCheckInput id="owner-radio" type="radio" name="user_type" value="Owner"
                            formControlName="user_type" [autofocus]="true"
                            [valid]="
               ctrl.touched && ctrl.valid
@@ -169,7 +179,7 @@
                 </c-input-group>
 
 
-                <c-input-group class="mb-3"  *ngIf="userForm.controls['password'] as ctrl">
+                <c-input-group class="mb-3" *ngIf="userForm.controls['password'] as ctrl">
                   <span cInputGroupText>
                     <svg cIcon name="cilLockLocked"></svg>
                   </span>
@@ -179,15 +189,13 @@
                     cFormControl
                     placeholder="Password"
                     type="password"
-
                     [autofocus]="true"
                     [valid]="
               ctrl.touched && ctrl.valid
                 ? true
                 : (submitted || ctrl.touched) && ctrl.invalid
                 ? false
-                : undefined
-            "
+                : undefined"
                   />
                   <c-form-feedback *ngIf="submitted || ctrl.invalid" [valid]="!(submitted || ctrl.invalid)">
                     <ng-container *ngIf="ctrl.errors as errors">
@@ -202,7 +210,7 @@
                   </c-form-feedback>
                 </c-input-group>
 
-                <c-input-group class="mb-4"  *ngIf="userForm.controls['confirm_password'] as ctrl">
+                <c-input-group class="mb-4" *ngIf="userForm.controls['confirm_password'] as ctrl">
                   <span cInputGroupText>
                     <svg cIcon name="cilLockLocked"></svg>
                   </span>
@@ -233,7 +241,7 @@
 
                 <c-input-group class="mb-3" *ngIf="userForm.controls['id_number'] as ctrl">
                   <span cInputGroupText>
-                    <svg cIcon name="cilEnvelopeClosed"></svg>
+                    <svg cIcon name="cibCcMastercard"></svg>
                   </span>
                   <input name="id_number" formControlName="id_number" cFormControl placeholder="Identity number"
                          [autofocus]="true"
@@ -246,9 +254,9 @@
             "/>
                 </c-input-group>
 
-                <c-input-group class="mb-3" *ngIf="userForm.controls['phone_number'] as ctrl">
+                <c-input-group class="mb-3" *ngIf="userForm.controls['address'] as ctrl">
                   <span cInputGroupText>
-                    <svg cIcon name="cilEnvelopeClosed"></svg>
+                    <svg cIcon name="cilBookmark"></svg>
                   </span>
                   <input name="address" cFormControl formControlName="address" placeholder="Address"
                          [autofocus]="true"

@@ -1,3 +1,6 @@
+<div class="overlay-spinner" *ngIf="(isLoading$ | async)">
+  <c-spinner></c-spinner>
+</div>
 <div class="bg-light min-vh-100 d-flex flex-row align-items-center">
   <c-container>
     <c-row class="justify-content-center">
@@ -5,36 +8,77 @@
         <c-card-group>
           <c-card class="p-4">
             <c-card-body>
-              <form cForm>
+              <c-alert
+                color="danger"
+                fade
+                *ngIf="(error$ | async)  as errors">
+                <p *ngFor="let error of errors">{{ error }}</p>
+              </c-alert>
+              <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
                 <h1>Login</h1>
                 <p class="text-medium-emphasis">Sign In to your account</p>
-                <c-input-group class="mb-3">
+                <c-input-group class="mb-3" *ngIf="loginForm.controls['phone_number'] as ctrl">
                   <span cInputGroupText>
                     <svg cIcon name="cilUser"></svg>
                   </span>
-                  <input autoComplete="username" cFormControl placeholder="Username" />
+                  <input
+                    cFormControl
+                    placeholder="Phone number"
+                    formControlName="phone_number"
+                    [autofocus]="true"
+                    [valid]="
+              ctrl.touched && ctrl.valid
+                ? true
+                : (submitted || ctrl.touched) && ctrl.invalid
+                ? false
+                : undefined
+            "
+                  />
+
+                  <c-form-feedback *ngIf="submitted || ctrl.invalid" [valid]="!(submitted || ctrl.invalid)">
+                    <ng-container *ngIf="ctrl.errors as errors">
+                      <div *ngIf="errors.required">                   {{formErrors["phoneNumber"]["required"]}}</div>
+                    </ng-container>
+
+                    <ng-container *ngIf="ctrl.errors as errors">
+                      <div *ngIf="errors.pattern">                   {{formErrors["phoneNumber"]["pattern"]}}</div>
+                    </ng-container>
+
+                  </c-form-feedback>
+
                 </c-input-group>
-                <c-input-group class="mb-4">
+                <c-input-group class="mb-4" *ngIf="loginForm.controls['password'] as ctrl">
                   <span cInputGroupText>
                     <svg cIcon name="cilLockLocked"></svg>
                   </span>
                   <input
-                    autoComplete="current-password"
                     cFormControl
                     placeholder="Password"
                     type="password"
+                    formControlName="password"
+                    [autofocus]="true"
+                    [valid]="
+              ctrl.touched && ctrl.valid
+                ? true
+                : (submitted || ctrl.touched) && ctrl.invalid
+                ? false
+                : undefined
+            "
                   />
+
+                  <c-form-feedback *ngIf="submitted || ctrl.invalid" [valid]="!(submitted || ctrl.invalid)">
+                    <ng-container *ngIf="ctrl.errors as errors">
+                      <div *ngIf="errors.required">                   {{formErrors["password"]["required"]}}</div>
+                    </ng-container>
+
+                  </c-form-feedback>
                 </c-input-group>
                 <c-row>
                   <c-col xs="6">
-                    <button cButton class="px-4" color="primary">
-                      Login
-                    </button>
+                    <button cButton class="px-4" color="primary" type="submit">Login</button>
                   </c-col>
                   <c-col class="text-right" xs="6">
-                    <button cButton class="px-0" color="link">
-                      Forgot password?
-                    </button>
+                    <button cButton class="px-0" color="link">Forgot password?</button>
                   </c-col>
                 </c-row>
               </form>

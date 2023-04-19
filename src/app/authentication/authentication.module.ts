@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {PagesRoutingModule} from "../views/pages/pages-routing.module";
-import {ButtonModule, CardModule, FormModule, GridModule} from "@coreui/angular";
+import {AlertModule, ButtonModule, CardModule, FormModule, GridModule, SpinnerModule} from "@coreui/angular";
 import {IconModule} from "@coreui/icons-angular";
 import {LogInComponent} from "./components/log-in/log-in.component";
 import { SignUpComponent } from './components/sign-up/sign-up.component';
@@ -26,9 +26,12 @@ import {HttpClientModule} from "@angular/common/http";
     IconModule,
     FormModule,
     ReactiveFormsModule,
+
     HttpClientModule,
     effectsModule,
-    store
+    store,
+    AlertModule,
+    SpinnerModule
   ]
 })
 export class AuthenticationModule { }
