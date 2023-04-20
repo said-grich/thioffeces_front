@@ -13,14 +13,18 @@ import {
 } from '../actions/auth.actions';
 import {Router} from "@angular/router";
 import {HttpErrorResponse, HttpResponse} from "@angular/common/http";
+import {ToastService} from "../../shared/toast.service";
+import {getContentOfKeyLiteral} from "@angular-material-extensions/select-country/schematics/helpers";
 
 @Injectable()
 export class AuthEffects {
 
   constructor(
+
     private actions$: Actions,
     private authService: AuthenticationService,
-    private router: Router
+    private router: Router,
+    private toastService: ToastService
   ) {
   }
 
@@ -56,6 +60,8 @@ export class AuthEffects {
     this.actions$.pipe(
       ofType<SignupSuccess>(AuthActionTypes.SIGNUP_SUCCESS),
       tap(() => {
+        alert("T")
+        this.toastService.showSuccessToast("Signup Success","Sign up successful! Please log in and verify your phone number.")
         this.router.navigate(['/log-in']);
       })
     ), { dispatch: false }
@@ -88,8 +94,9 @@ export class AuthEffects {
     this.actions$.pipe(
       ofType<SignupSuccess>(AuthActionTypes.LOGIN_SUCCESS),
       tap((action) => {
-
         this.authService.setAuthToken(action.payload["access_token"]);
+        this.toastService.showSuccessToast("Login Successful","Welcome back! You have successfully logged in.")
+
         this.router.navigate(['/']);
       })
     ), { dispatch: false }

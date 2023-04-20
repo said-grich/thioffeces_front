@@ -13,6 +13,8 @@ import {
   getIsPhoneVerified,
   getLoading
 } from "./authentication/reducers/auth.reducer";
+import {EventTypes} from "./includes/models/event-types";
+import {ToastService} from "./shared/toast.service";
 
 @Component({
   selector: 'app-root',
@@ -34,6 +36,7 @@ export class AppComponent implements OnInit {
   isActive = this.store.pipe(select(getIsActive));
 
   constructor(
+    private toastService: ToastService,
     private router: Router,
     private titleService: Title,
     private iconSetService: IconSetService,
@@ -54,7 +57,7 @@ export class AppComponent implements OnInit {
             this.router.navigate(['/log-in']);
           }
         }
-        
+
       )
 
 
@@ -63,5 +66,22 @@ export class AppComponent implements OnInit {
         return;
       }
     });
+  }
+
+  showToast(type: EventTypes) {
+    switch (type) {
+      case EventTypes.Success:
+        this.toastService.showSuccessToast('Success toast title', 'This is a success toast message.');
+        break;
+      case EventTypes.Warning:
+        this.toastService.showWarningToast('Warning toast title', 'This is a warning toast message.');
+        break;
+      case EventTypes.Error:
+        this.toastService.showErrorToast('Error toast title', 'This is an error toast message.');
+        break;
+      default:
+        this.toastService.showInfoToast('Info toast title', 'This is an info toast message.');
+        break;
+    }
   }
 }

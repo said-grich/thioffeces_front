@@ -4,6 +4,7 @@ import { BrowserModule, Title } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ReactiveFormsModule } from '@angular/forms';
 
+
 import {
   PERFECT_SCROLLBAR_CONFIG,
   PerfectScrollbarConfigInterface,
@@ -49,6 +50,8 @@ import { LogInComponent } from './authentication/components/log-in/log-in.compon
 import {AuthenticationModule} from "./authentication/authentication.module";
 import {JwtInterceptor} from "./shared/jwt.interceptor";
 import {HTTP_INTERCEPTORS} from "@angular/common/http";
+import {ToastComponent} from "./includes/components/toast/toast.component";
+import {ToasterComponent} from "./includes/components/toaster/toaster.component";
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true,
@@ -61,7 +64,7 @@ const APP_CONTAINERS = [
 ];
 
 @NgModule({
-  declarations: [AppComponent, ...APP_CONTAINERS],
+  declarations: [AppComponent, ...APP_CONTAINERS ,],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
@@ -93,12 +96,12 @@ const APP_CONTAINERS = [
   ],
   providers: [
 
-  {
-    provide: HTTP_INTERCEPTORS,
-    useClass: JwtInterceptor,
-    multi: true
-  }
-,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: JwtInterceptor,
+      multi: true
+    }
+    ,
     {
       provide: LocationStrategy,
       useClass: HashLocationStrategy,
@@ -111,6 +114,8 @@ const APP_CONTAINERS = [
     Title
   ],
   bootstrap: [AppComponent],
+  exports: [
+  ]
 })
 export class AppModule {
 }
