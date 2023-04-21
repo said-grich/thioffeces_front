@@ -5,7 +5,7 @@ import {
   HttpRequest,
   HttpEvent,
   HttpResponse,
-  HttpErrorResponse
+  HttpErrorResponse, HttpXsrfTokenExtractor, HttpClient
 } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
@@ -13,41 +13,56 @@ import { AuthenticationService } from '../authentication/services/authentication
 
 @Injectable()
 export class JwtInterceptor implements HttpInterceptor {
-  constructor(private authService: AuthenticationService) {}
+  private token: string | undefined;
+  csrfToken:any
+  constructor(private http: HttpClient,private authService: AuthenticationService,private tokenExtractor: HttpXsrfTokenExtractor) {}
 
-  intercept(request: HttpRequest<any>, next: HttpHandler): any {
-    let authRequest = request;
+  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
-    const token = this.authService.getAuthToken();
-    if (token) {
-      authRequest = this.addToken(request, token);
-    }
+    const idToken = this.authService.getAuthToken();
+    const refreshToken = this.authService.getRefreshToken();
 
-    return next.handle(authRequest).pipe(
-      catchError((error: HttpErrorResponse) => {
-        if (error.status === 401 && error.error?.code === 'token_not_valid') {
-          return this.authService.refreshToken().pipe(
-            switchMap((response: any) => {
-              this.authService.setAuthToken(response.access);
-              authRequest = this.addToken(request, response.access);
-              return next.handle(authRequest);
-            }),
-            catchError((error: HttpErrorResponse) => {
-              this.authService.logout();
-              return throwError(error);
-            })
-          );
-        }
-        return throwError(error);
-      })
-    );
-  }
+    if (idToken) {
 
-  private addToken(request: HttpRequest<any>, token: string) {
-    return request.clone({
-      setHeaders: {
-        Authorization: `Bearer ${token}`
+      let cloned = req.clone({
+        setHeaders: {
+          Authorization: `Bearer ${idToken}`,
+        },
+      });
+
+      if (!req.headers.has('X-CSRF-TOKEN')) {
+        cloned = cloned.clone({ headers: req.headers.set('X-CSRF-TOKEN', this.tokenExtractor.getToken() || '') });
       }
-    });
+
+      return next.handle(cloned).pipe(
+        catchError((error) => {
+          if (error instanceof HttpErrorResponse && error.status === 401 && refreshToken) {
+            return this.authService.refreshToken().pipe(
+              switchMap((response) => {
+                // @ts-ignore
+                const newIdToken = response["access_token"];
+                // @ts-ignore
+                const newRefreshToken = response["refresh_token"];
+                this.authService.setAuthToken(newIdToken);
+                const clonedWithNewToken = req.clone({
+                  setHeaders: {
+                    Authorization: `Bearer ${newIdToken}`,
+                  },
+                });
+                return next.handle(clonedWithNewToken);
+              }),
+              catchError((error) => {
+                this.authService.logout();
+                return throwError(error);
+              })
+            );
+          } else {
+            return throwError(error);
+          }
+        })
+      );
+    } else {
+      return next.handle(req);
+    }
   }
 }

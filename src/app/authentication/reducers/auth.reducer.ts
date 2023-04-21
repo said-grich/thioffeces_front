@@ -9,6 +9,8 @@ export interface AuthState {
   user: User | null
   is_phone_verified:boolean;
   is_active:boolean;
+  token:string|null;
+  refresh_token:string|null;
 }
 
 const initialState: AuthState = {
@@ -17,7 +19,9 @@ const initialState: AuthState = {
   isAuthenticated: false,
   user: null,
   is_phone_verified:false,
-  is_active:false
+  is_active:false,
+  token:null,
+  refresh_token:null,
 };
 
 export function authReducer(
@@ -53,18 +57,31 @@ export function authReducer(
     case AuthActionTypes.LOGIN_SUCCESS:
       return {
         ...state,
-
         isAuthenticated:true,
         loading: false,
         error: null,
         is_phone_verified:action.payload["is_phone_verified"],
         is_active:action.payload["is_active"],
+        token:action.payload["access_token"],
+        refresh_token:action.payload["refresh_token"]
       };
     case AuthActionTypes.LOGIN_FAILURE:
       return {
         ...state,
         loading: false,
         error: action.payload["error"],
+      };
+    case AuthActionTypes.LOGOUT:
+      return {
+        ...state,
+        loading: false,
+        isAuthenticated:false,
+        error: null,
+        is_phone_verified:false,
+        is_active:false,
+        token:null,
+        refresh_token:null
+
       };
     default:
       return state;

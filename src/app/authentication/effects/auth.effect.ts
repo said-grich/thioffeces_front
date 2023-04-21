@@ -60,7 +60,6 @@ export class AuthEffects {
     this.actions$.pipe(
       ofType<SignupSuccess>(AuthActionTypes.SIGNUP_SUCCESS),
       tap(() => {
-        alert("T")
         this.toastService.showSuccessToast("Signup Success","Sign up successful! Please log in and verify your phone number.")
         this.router.navigate(['/log-in']);
       })
@@ -75,7 +74,6 @@ export class AuthEffects {
         this.authService.login(action.payload).pipe(
           map( (response: any)  => {
               return new LoginSuccess(response);
-
           }),
           catchError((error) => {
             let errorMsg:string[]|unknown[] =[ 'An unknown error occurred.'];
@@ -96,7 +94,6 @@ export class AuthEffects {
       tap((action) => {
         this.authService.setAuthToken(action.payload["access_token"]);
         this.toastService.showSuccessToast("Login Successful","Welcome back! You have successfully logged in.")
-
         this.router.navigate(['/']);
       })
     ), { dispatch: false }
