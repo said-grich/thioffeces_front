@@ -1,79 +1,56 @@
-<!--<div class="overlay-spinner" *ngIf="(isLoading$ | async)">-->
-<!--  <c-spinner></c-spinner>-->
-<!--</div>-->
-<!--<div class="bg-light min-vh-100 d-flex flex-row align-items-center">-->
-<!--  <c-container>-->
-<!--    <c-row class="justify-content-center">-->
-<!--      <c-col md="8">-->
-<!--        <c-card-group>-->
-<!--          <c-card class="p-4">-->
-<!--            <c-card-body>-->
-<!--              <c-alert-->
-<!--                color="danger"-->
-<!--                fade-->
-<!--                *ngIf="(error$ | async)  as errors">-->
-<!--                <p *ngFor="let error of errors">{{ error }}</p>-->
-<!--              </c-alert>-->
-<!--              <form [formGroup]="verifyForm" (ngSubmit)="onSubmit()">-->
-<!--                <h1>Verify Phone</h1>-->
-<!--                <p class="text-medium-emphasis">Enter the verification code sent to your phone</p>-->
-<!--                <c-input-group class="mb-3" *ngIf="verifyForm.controls['verification_code'] as ctrl">-->
-<!--                  <span cInputGroupText>-->
-<!--                    <svg cIcon name="cilLockLocked"></svg>-->
-<!--                  </span>-->
-<!--                  <input-->
-<!--                    cFormControl-->
-<!--                    placeholder="Verification code"-->
-<!--                    formControlName="verification_code"-->
-<!--                    [autofocus]="true"-->
-<!--                    [valid]="-->
-<!--              ctrl.touched && ctrl.valid-->
-<!--                ? true-->
-<!--                : (submitted || ctrl.touched) && ctrl.invalid-->
-<!--                ? false-->
-<!--                : undefined-->
-<!--            "-->
-<!--                  />-->
+<div class="overlay-spinner" *ngIf="(isLoading$ | async)">
+  <c-spinner></c-spinner>
+</div>
+<div class="bg-light min-vh-100 d-flex flex-row align-items-center">
+  <c-container>
+    <c-row class="justify-content-center">
+      <c-col md="8">
+        <c-card-group>
+          <c-card class="p-4">
+            <c-card-body>
+              <c-alert
+                color="danger"
+                fade
+                *ngIf="(error$ | async)  as errors">
+                <p *ngFor="let error of errors">{{ error }}</p>
+              </c-alert>
+              <form [formGroup]="verifyForm" (ngSubmit)="verify()">
+                <h1 class="text-center">Verify Phone</h1>
+                <p class="text-medium-emphasis text-center">Enter the verification code sent to your phone</p>
+                <c-input-group class="mb-3"  *ngIf="verifyForm.controls['verification_code'] as ctrl">
+                  <span cInputGroupText>
+                    <svg cIcon name="cilLockLocked"></svg>
+                  </span>
+                  <input
+                    cFormControl
+                    placeholder="Verification code"
+                    formControlName="verification_code"
+                    [autofocus]="true"
+                    [valid]="
+              ctrl.touched && ctrl.valid
+                ? true
+                : (submitted || ctrl.touched) && ctrl.invalid
+                ? false
+                : undefined
+            "
+                  />
 
-<!--                  <c-form-feedback *ngIf="submitted || ctrl.invalid" [valid]="!(submitted || ctrl.invalid)">-->
-<!--                    <ng-container *ngIf="ctrl.errors as errors">-->
-<!--                      <div *ngIf="errors.required">                   {{formErrors["verificationCode"]["required"]}}</div>-->
-<!--                    </ng-container>-->
-
-<!--                    <ng-container *ngIf="ctrl.errors as errors">-->
-<!--                      <div *ngIf="errors.pattern">                   {{formErrors["verificationCode"]["pattern"]}}</div>-->
-<!--                    </ng-container>-->
-
-<!--                  </c-form-feedback>-->
-
-<!--                </c-input-group>-->
-<!--                <c-row>-->
-<!--                  <c-col xs="6">-->
-<!--                    <button cButton class="px-4" color="primary" type="submit">Verify</button>-->
-<!--                  </c-col>-->
-<!--                  <c-col class="text-right" xs="6">-->
-<!--                    <button cButton class="px-0" color="link" (click)="onResendCode()">Resend code</button>-->
-<!--                  </c-col>-->
-<!--                </c-row>-->
-<!--              </form>-->
-<!--            </c-card-body>-->
-<!--          </c-card>-->
-<!--          <c-card [ngStyle]="{'width.%': 44}" class="text-white bg-primary py-5">-->
-<!--            <c-card-body class="text-center">-->
-<!--              <div>-->
-<!--                <h2>Didn't receive a code?</h2>-->
-<!--                <p>-->
-<!--                  Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod-->
-<!--                  tempor incididunt ut labore et dolore magna aliqua.-->
-<!--                </p>-->
-<!--                <button [active]="true" cButton class="mt-3" color="primary" (click)="onResendCode()">-->
-<!--                  Resend Code-->
-<!--                </button>-->
-<!--              </div>-->
-<!--            </c-card-body>-->
-<!--          </c-card>-->
-<!--        </c-card-group>-->
-<!--      </c-col>-->
-<!--    </c-row>-->
-<!--  </c-container>-->
-<!--</div>-->
+                  <c-form-feedback *ngIf="submitted || ctrl.invalid" [valid]="!(submitted || ctrl.invalid)">
+                    <ng-container *ngIf="ctrl.errors as errors">
+                      <div *ngIf="errors['required']">    {{formErrors["verificationCode"]["required"]}}</div>
+                    </ng-container>
+                  </c-form-feedback>
+                </c-input-group>
+                <c-row class="justify-content-center ">
+                  <c-col class="text-center">
+                    <button cButton class="px-4" color="primary" type="submit">Verify</button>
+                  </c-col>
+                </c-row>
+              </form>
+            </c-card-body>
+          </c-card>
+        </c-card-group>
+      </c-col>
+    </c-row>
+  </c-container>
+</div>

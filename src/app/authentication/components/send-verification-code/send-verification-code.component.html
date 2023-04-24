@@ -1,0 +1,77 @@
+<div class="overlay-spinner" *ngIf="(isLoading$ | async)">
+  <c-spinner></c-spinner>
+</div>
+
+
+<div class="bg-light min-vh-100 d-flex flex-row align-items-center">
+  <c-container>
+    <c-row class="justify-content-center">
+      <c-col md="8">
+        <c-card-group>
+          <c-card class="p-4">
+            <c-card-body>
+              <c-alert
+                color="danger"
+                fade
+                *ngIf="(error$ | async)  as errors">
+                <p *ngFor="let error of errors">{{ error }}</p>
+              </c-alert>
+              <form [formGroup]="verifyForm" (ngSubmit)="onSend()">
+                <h1 class="text-center">Verify Phone</h1>
+
+                <p class="text-medium-emphasis text-center">Enter the verification code sent to your phone</p>
+                <c-input-group class="mb-3" *ngIf="verifyForm.controls['phone_number'] as ctrl">
+                 <span style="width: 100px ; " *ngIf="verifyForm.controls['country_code'] as ctrl2">
+                    <select aria-label="Select country code" formControlName="country_code" cSelect
+                            style="border-top-right-radius: 0px ; border-bottom-right-radius:0 "
+
+                            [autofocus]="true"
+                            [valid]="
+              ctrl2.touched && ctrl2.valid
+                ? true
+                : (submitted || ctrl2.touched) && ctrl2.invalid
+                ? false
+                : undefined
+            "
+                    >
+                      <option *ngFor="let country of codes" [ngValue]="country.countryCodes[0]">{{country.isoCode2}}
+                        ({{country.countryCodes[0]}})</option>
+                    </select>
+                  </span>
+                  <input
+                    cFormControl
+                    placeholder="Phone number"
+                    formControlName="phone_number"
+                    [autofocus]="true"
+                    [valid]="
+              ctrl.touched && ctrl.valid
+                ? true
+                : (submitted || ctrl.touched) && ctrl.invalid
+                ? false
+                : undefined
+            "
+                  />
+
+                  <c-form-feedback *ngIf="submitted || ctrl.invalid" [valid]="!(submitted || ctrl.invalid)">
+                    <ng-container *ngIf="ctrl.errors as errors">
+                      <div *ngIf="errors['required']">    {{formErrors["phoneNumber"]["required"]}}</div>
+                    </ng-container>
+                    <ng-container *ngIf="ctrl.errors as errors">
+                      <div *ngIf="errors['pattern']">    {{formErrors["phoneNumber"]["pattern"]}}</div>
+                    </ng-container>
+
+                  </c-form-feedback>
+                </c-input-group>
+                <c-row class="text-center">
+                  <c-col>
+                    <button cButton class="px-4" color="primary" type="submit">Send</button>
+                  </c-col>
+                </c-row>
+              </form>
+            </c-card-body>
+          </c-card>
+        </c-card-group>
+      </c-col>
+    </c-row>
+  </c-container>
+</div>

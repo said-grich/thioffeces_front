@@ -20,12 +20,13 @@ import { VerifyPhoneComponent } from './components/verify-phone/verify-phone.com
 import {ToastComponent} from "../includes/components/toast/toast.component";
 import {ToasterComponent} from "../includes/components/toaster/toaster.component";
 import {StoreModule} from "@ngrx/store";
+import { SendVerificationCodeComponent } from './components/send-verification-code/send-verification-code.component';
 
 
 
 
 @NgModule({
-  declarations: [LogInComponent, SignUpComponent, VerifyPhoneComponent,ToastComponent, ToasterComponent],
+  declarations: [LogInComponent, SignUpComponent, VerifyPhoneComponent, SendVerificationCodeComponent],
   imports: [
     CommonModule,
     CommonModule,

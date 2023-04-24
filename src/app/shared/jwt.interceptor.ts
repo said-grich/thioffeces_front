@@ -7,62 +7,43 @@ import {
   HttpResponse,
   HttpErrorResponse, HttpXsrfTokenExtractor, HttpClient
 } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import {Observable, skipWhile, take, throwError} from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
 import { AuthenticationService } from '../authentication/services/authentication.service';
+import {select, Store} from "@ngrx/store";
+import * as fromAuth from "../authentication/reducers/auth.reducer";
+import {getToken, getUser} from "../authentication/reducers/auth.reducer";
 
 @Injectable()
 export class JwtInterceptor implements HttpInterceptor {
-  private token: string | undefined;
-  csrfToken:any
-  constructor(private http: HttpClient,private authService: AuthenticationService,private tokenExtractor: HttpXsrfTokenExtractor) {}
+  // @ts-ignore
+  token$ = this.store.pipe(select(getToken));
+
+
+  constructor(private store: Store<fromAuth.AuthState>,
+    private http: HttpClient,private authService: AuthenticationService,private tokenExtractor: HttpXsrfTokenExtractor) {
+
+  }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    let token=null;
+    this.token$.subscribe(
+      data=>{
+       token=data;
 
-    const idToken = this.authService.getAuthToken();
-    const refreshToken = this.authService.getRefreshToken();
-
-    if (idToken) {
-
-      let cloned = req.clone({
-        setHeaders: {
-          Authorization: `Bearer ${idToken}`,
-        },
-      });
-
-      if (!req.headers.has('X-CSRF-TOKEN')) {
-        cloned = cloned.clone({ headers: req.headers.set('X-CSRF-TOKEN', this.tokenExtractor.getToken() || '') });
       }
+    )
+    req = req.clone({
+      setHeaders: {
+        Authorization: token ? `Bearer ${token}` : '',
+      },
+    });
+    return next.handle(req);
 
-      return next.handle(cloned).pipe(
-        catchError((error) => {
-          if (error instanceof HttpErrorResponse && error.status === 401 && refreshToken) {
-            return this.authService.refreshToken().pipe(
-              switchMap((response) => {
-                // @ts-ignore
-                const newIdToken = response["access_token"];
-                // @ts-ignore
-                const newRefreshToken = response["refresh_token"];
-                this.authService.setAuthToken(newIdToken);
-                const clonedWithNewToken = req.clone({
-                  setHeaders: {
-                    Authorization: `Bearer ${newIdToken}`,
-                  },
-                });
-                return next.handle(clonedWithNewToken);
-              }),
-              catchError((error) => {
-                this.authService.logout();
-                return throwError(error);
-              })
-            );
-          } else {
-            return throwError(error);
-          }
-        })
-      );
-    } else {
-      return next.handle(req);
-    }
+
   }
+
+
+
+
 }

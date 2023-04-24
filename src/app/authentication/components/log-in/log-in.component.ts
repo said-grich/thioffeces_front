@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Store, select} from '@ngrx/store';
-import {AuthState, getError, getIsAuthenticated, getLoading} from '../../reducers/auth.reducer';
+import {AuthState, getError, getIsAuthenticated, getIsPhoneVerified, getLoading} from '../../reducers/auth.reducer';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ValidationFormsService} from "../../services/validation.service";
 import {Login, Signup} from "../../actions/auth.actions";
@@ -24,6 +24,8 @@ export class LogInComponent implements OnInit {
   // @ts-ignore
 
   isAuthenticated = this.store.pipe(select(getIsAuthenticated));
+  // @ts-ignore
+  isPhoneVerified = this.store.pipe(select(getIsPhoneVerified));
 
   constructor(private toastService: ToastService,
     private store: Store<fromAuth.AuthState>, private validationFormsService: ValidationFormsService) {
@@ -33,6 +35,7 @@ export class LogInComponent implements OnInit {
 
   ngOnInit(): void {
     this.loginForm = this.validationFormsService.initialLoginForm();
+
   }
 
   onSubmit() {

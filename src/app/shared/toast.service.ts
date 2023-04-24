@@ -15,7 +15,6 @@ export class ToastService {
   }
 
   showSuccessToast(title: string, message: string) {
-    console.log(title)
     this._toastEvents.next({
       message,
       title,

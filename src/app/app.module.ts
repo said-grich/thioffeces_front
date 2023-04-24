@@ -49,9 +49,10 @@ import { IconModule, IconSetService } from '@coreui/icons-angular';
 import { LogInComponent } from './authentication/components/log-in/log-in.component';
 import {AuthenticationModule} from "./authentication/authentication.module";
 import {JwtInterceptor} from "./shared/jwt.interceptor";
-import {HTTP_INTERCEPTORS} from "@angular/common/http";
+import {HTTP_INTERCEPTORS, HttpClientXsrfModule} from "@angular/common/http";
 import {ToastComponent} from "./includes/components/toast/toast.component";
 import {ToasterComponent} from "./includes/components/toaster/toaster.component";
+import {AuthenticationService} from "./authentication/services/authentication.service";
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true,
@@ -64,7 +65,7 @@ const APP_CONTAINERS = [
 ];
 
 @NgModule({
-  declarations: [AppComponent, ...APP_CONTAINERS ,],
+  declarations: [AppComponent, ...APP_CONTAINERS ,ToastComponent, ToasterComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
@@ -92,16 +93,21 @@ const APP_CONTAINERS = [
     BadgeModule,
     ListGroupModule,
     CardModule,
-    AuthenticationModule
+    AuthenticationModule,
+    HttpClientXsrfModule.withOptions({
+      cookieName: 'csrftoken',
+      headerName: 'X-CSRFToken',
+    }),
   ],
   providers: [
+    AuthenticationService,
 
     {
       provide: HTTP_INTERCEPTORS,
       useClass: JwtInterceptor,
       multi: true
-    }
-    ,
+    },
+
     {
       provide: LocationStrategy,
       useClass: HashLocationStrategy,

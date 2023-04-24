@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
-import {Observable, of, tap, throwError} from 'rxjs';
+import {Observable, of, take, tap, throwError} from 'rxjs';
 import {catchError, map, switchMap} from 'rxjs/operators';
 import {AuthenticationService} from '../services/authentication.service';
 import {
@@ -9,25 +9,44 @@ import {
   SignupSuccess,
   SignupFailure,
   AuthActions,
-  LoginFailure, LoginSuccess
+  LoginFailure,
+  LoginSuccess,
+  VerifyPhone_SUCCESS,
+  VerifyPhone_FAILURE,
+  SendCode_SUCCESS,
+  SendCode_FAILURE,
+  Login,
+  SendCode, VerifyPhone
 } from '../actions/auth.actions';
-import {Router} from "@angular/router";
+import {NavigationExtras, Router} from "@angular/router";
 import {HttpErrorResponse, HttpResponse} from "@angular/common/http";
 import {ToastService} from "../../shared/toast.service";
 import {getContentOfKeyLiteral} from "@angular-material-extensions/select-country/schematics/helpers";
+import {select, Store} from "@ngrx/store";
+import {getIsAuthenticated, getIsPhoneVerified, getLoading} from "../reducers/auth.reducer";
+import * as fromAuth from "../reducers/auth.reducer";
+// @ts-ignore
+import moment from 'moment';
+import {ErrorToast, SuccessToast} from "../../actions/toastActions";
+import {AppState} from "../../state";
 
 @Injectable()
 export class AuthEffects {
+  // @ts-ignore
+  isLoading$ = this.store.pipe(select(getLoading));
+  // @ts-ignore
+
+  isAuthenticated = this.store.pipe(select(getIsAuthenticated));
+  // @ts-ignore
+  isPhoneVerified = this.store.pipe(select(getIsPhoneVerified));
 
   constructor(
-
+    private store: Store<AppState>,
     private actions$: Actions,
     private authService: AuthenticationService,
     private router: Router,
-    private toastService: ToastService
   ) {
   }
-
 
 
   signup$ = createEffect(() =>
@@ -35,21 +54,21 @@ export class AuthEffects {
       ofType<Signup>(AuthActionTypes.SIGNUP),
       switchMap((action) =>
         this.authService.signup(action.payload).pipe(
-          map( (response: any)  => {
+          map((response: any) => {
             console.log(response["status"] == "201")
             if (response["status"] == "201") {
-              return new SignupSuccess({ user: response.body });
+              return new SignupSuccess({user: response.body});
             } else {
-              return new SignupFailure({ error: ""  });
+              return new SignupFailure({error: ""});
             }
           }),
           catchError((error) => {
-            let errorMsg:string[]|unknown[] =[ 'An unknown error occurred.'];
+            let errorMsg: string[] | unknown[] = ['An unknown error occurred.'];
             if (error.error) {
               errorMsg = Object.values(error.error).flat();
             }
             console.error(errorMsg);
-            return of(new SignupFailure({ error: errorMsg }));
+            return of(new SignupFailure({error: errorMsg}));
           })
         )
       )
@@ -60,43 +79,148 @@ export class AuthEffects {
     this.actions$.pipe(
       ofType<SignupSuccess>(AuthActionTypes.SIGNUP_SUCCESS),
       tap(() => {
-        this.toastService.showSuccessToast("Signup Success","Sign up successful! Please log in and verify your phone number.")
-        this.router.navigate(['/log-in']);
+        this.router.navigate(['/login']);
       })
-    ), { dispatch: false }
+    ), {dispatch: false}
   );
 
 
   login$ = createEffect(() =>
     this.actions$.pipe(
-      ofType<Signup>(AuthActionTypes.LOGIN),
-      switchMap((action) =>
-        this.authService.login(action.payload).pipe(
-          map( (response: any)  => {
+      ofType<Login>(AuthActionTypes.LOGIN),
+      switchMap((action) => {
+          return this.authService.login(action.payload).pipe(
+            map((response: any) => {
               return new LoginSuccess(response);
-          }),
-          catchError((error) => {
-            let errorMsg:string[]|unknown[] =[ 'An unknown error occurred.'];
-            if (error.error) {
-              errorMsg = Object.values(error.error).flat();
-            }
-            console.error(errorMsg);
-            return of(new LoginFailure({ error: errorMsg }));
-          })
-        )
+            }),
+            catchError((error) => {
+              let errorMsg: string[] | unknown[] = ['An unknown error occurred.'];
+              if (error.error) {
+                errorMsg = Object.values(error.error).flat();
+              }
+              console.error(errorMsg);
+              return of(new LoginFailure({error: errorMsg}));
+            })
+          )
+
+        }
       )
     )
   );
 
   loginSuccess$: Observable<AuthActions> = createEffect(() =>
     this.actions$.pipe(
-      ofType<SignupSuccess>(AuthActionTypes.LOGIN_SUCCESS),
+      ofType<LoginSuccess>(AuthActionTypes.LOGIN_SUCCESS),
       tap((action) => {
-        this.authService.setAuthToken(action.payload["access_token"]);
-        this.toastService.showSuccessToast("Login Successful","Welcome back! You have successfully logged in.")
-        this.router.navigate(['/']);
+
+        this.store.dispatch(new SuccessToast({
+          "title": "Login Successful",
+          "body": "Welcome back! You have successfully logged in."
+        }));
+        this.isPhoneVerified.subscribe(
+          isPhoneVerified => {
+            if (!isPhoneVerified) {
+              this.router.navigate(['/send-code']);
+            } else {
+              this.router.navigate(['/']);
+            }
+          }
+        )
+
       })
-    ), { dispatch: false }
+    ), {dispatch: false}
   );
+
+
+  sendCode = createEffect(() =>
+    this.actions$.pipe(
+      ofType<SendCode>(AuthActionTypes.SendCode),
+      switchMap((action) =>
+        this.authService.sendCode(action.payload).pipe(
+          map((response: any) => {
+
+            return new SendCode_SUCCESS(response);
+          }),
+          catchError((error) => {
+            console.error(error)
+            let errorMsg: string[] | unknown[] = ['An unknown error occurred.'];
+            if (error.error) {
+              errorMsg = Object.values(error.error).flat();
+            }
+            console.log(errorMsg);
+            return of(new SendCode_FAILURE({error: errorMsg}));
+          })
+        )
+      )
+    )
+  );
+
+  SendCodeSuccess$: Observable<AuthActions> = createEffect(() =>
+    this.actions$.pipe(
+      ofType<SendCode_SUCCESS>(AuthActionTypes.SendCode_SUCCESS),
+      tap((action) => {
+        this.isPhoneVerified.subscribe(
+          isPhoneVerified => {
+            this.store.dispatch(new SuccessToast({
+              "title": "Verification Code Send Successful",
+              "body": "Verification Code Send Successful"
+            }));
+            if (!isPhoneVerified) {
+
+              this.router.navigate(['/verify-phone'])
+
+            } else {
+              this.router.navigate(['/']);
+            }
+          }
+        )
+      })
+    ), {dispatch: false}
+  );
+
+
+  verifyPhone$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType<VerifyPhone>(AuthActionTypes.VerifyPhone),
+      switchMap((action) =>
+        this.authService.verifyPhone(action.payload).pipe(
+          map((response: any) => {
+            console.log(response, "Rs")
+            return new VerifyPhone_SUCCESS(response);
+          }),
+          catchError((error) => {
+            console.error(error)
+            let errorMsg: string[] | unknown[] = ['An unknown error occurred.'];
+            if (error.error) {
+              errorMsg = Object.values(error.error).flat();
+            }
+            console.log(errorMsg);
+            return of(new VerifyPhone_FAILURE({error: errorMsg}));
+          })
+        )
+      )
+    )
+  );
+  VerifyPhoneSUCCESS$: Observable<AuthActions> = createEffect(() =>
+    this.actions$.pipe(
+      ofType<VerifyPhone_SUCCESS>(AuthActionTypes.VerifyPhone_SUCCESS),
+      tap((action) => {
+        console.log("Pay", action.payload)
+        if (action.payload["success"] == true) {
+          this.store.dispatch(new SuccessToast({
+            "title": "Phone Verified With Success",
+            "body": "Phone Verified With Success"
+          }));
+          this.router.navigate(["/"])
+        } else {
+          this.store.dispatch(new ErrorToast({
+            "title": "Phone Verified With ERRor",
+            "body": "Phone Verified With Error"
+          }));
+        }
+      })
+    ), {dispatch: false}
+  );
+
 
 }

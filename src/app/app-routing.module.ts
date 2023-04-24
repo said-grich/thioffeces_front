@@ -4,19 +4,20 @@ import { RouterModule, Routes } from '@angular/router';
 import { DefaultLayoutComponent } from './containers';
 import { Page404Component } from './views/pages/page404/page404.component';
 import { Page500Component } from './views/pages/page500/page500.component';
-import { LoginComponent } from './views/pages/login/login.component';
-import { RegisterComponent } from './views/pages/register/register.component';
 import {LogInComponent} from "./authentication/components/log-in/log-in.component";
-import {AuthenticationModule} from "./authentication/authentication.module";
 import {SignUpComponent} from "./authentication/components/sign-up/sign-up.component";
+import {VerifyPhoneComponent} from "./authentication/components/verify-phone/verify-phone.component";
+import {
+  SendVerificationCodeComponent
+} from "./authentication/components/send-verification-code/send-verification-code.component";
 
 const routes: Routes = [
   {
     path: '',
     redirectTo: 'dashboard',
+
     pathMatch: 'full'
   },
-
   {
     path: '',
     component: DefaultLayoutComponent,
@@ -81,19 +82,32 @@ const routes: Routes = [
       },
     ]
   },
-  { path: 'sing-up', component: SignUpComponent ,
+
+  { path: 'singup', component: SignUpComponent ,
     data:{
       title: 'sing-up page'
     }
 
-  },
+  }
+  ,
 
-  { path: 'log-in', component: LogInComponent ,
+  { path: 'login', component: LogInComponent ,
   data:{
     title: 'login page'
   }
 
   },
+  { path: 'send-code', component: SendVerificationCodeComponent ,
+    data:{
+      title: 'login page'
+    }
+  },
+  { path: 'verify-phone', component: VerifyPhoneComponent ,
+    data:{
+      title: 'login page'
+    }
+  },
+
 
   {
     path: '404',
@@ -109,20 +123,7 @@ const routes: Routes = [
       title: 'Page 500'
     }
   },
-  {
-    path: 'login',
-    component: LoginComponent,
-    data: {
-      title: 'Login Page'
-    }
-  },
-  {
-    path: 'register',
-    component: RegisterComponent,
-    data: {
-      title: 'Register Page'
-    }
-  },
+
 
 ];
 

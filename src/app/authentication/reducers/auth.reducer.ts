@@ -7,10 +7,10 @@ export interface AuthState {
   error: string | null;
   isAuthenticated: boolean;
   user: User | null
-  is_phone_verified:boolean;
-  is_active:boolean;
-  token:string|null;
-  refresh_token:string|null;
+  is_phone_verified: boolean;
+  is_active: boolean;
+  token: string | null;
+  refresh_token: string | null;
 }
 
 const initialState: AuthState = {
@@ -18,10 +18,10 @@ const initialState: AuthState = {
   error: "",
   isAuthenticated: false,
   user: null,
-  is_phone_verified:false,
-  is_active:false,
-  token:null,
-  refresh_token:null,
+  is_phone_verified: false,
+  is_active: false,
+  token: null,
+  refresh_token: null,
 };
 
 export function authReducer(
@@ -57,13 +57,14 @@ export function authReducer(
     case AuthActionTypes.LOGIN_SUCCESS:
       return {
         ...state,
-        isAuthenticated:true,
+        isAuthenticated: true,
         loading: false,
         error: null,
-        is_phone_verified:action.payload["is_phone_verified"],
-        is_active:action.payload["is_active"],
-        token:action.payload["access_token"],
-        refresh_token:action.payload["refresh_token"]
+        is_phone_verified: action.payload["is_phone_verified"],
+        is_active: action.payload["is_active"],
+        token: action.payload["access_token"],
+        refresh_token: action.payload["refresh_token"],
+        user: action.payload["user"]
       };
     case AuthActionTypes.LOGIN_FAILURE:
       return {
@@ -75,14 +76,56 @@ export function authReducer(
       return {
         ...state,
         loading: false,
-        isAuthenticated:false,
+        isAuthenticated: false,
         error: null,
-        is_phone_verified:false,
-        is_active:false,
-        token:null,
-        refresh_token:null
+        is_phone_verified: false,
+        is_active: false,
+        token: null,
+        refresh_token: null
 
       };
+    case AuthActionTypes.ClearError:
+      return {
+        ...state,
+        error: null,
+      };
+    case AuthActionTypes.VerifyPhone:
+      return {
+        ...state,
+        loading: true,
+      };
+    case AuthActionTypes.VerifyPhone_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        is_phone_verified: true,
+        error: null,
+      };
+    case AuthActionTypes.VerifyPhone_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload["error"],
+      };
+    case AuthActionTypes.SendCode:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+      };
+    case AuthActionTypes.SendCode_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        error: null,
+      };
+    case AuthActionTypes.SendCode_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload["error"],
+      };
+
     default:
       return state;
   }
@@ -109,4 +152,12 @@ export const getIsPhoneVerified = createSelector(
 export const getIsActive = createSelector(
   selectAuthState,
   (state) => state.is_active
+);
+export const getUser = createSelector(
+  selectAuthState,
+  (state) => state.user
+);
+export const getToken= createSelector(
+  selectAuthState,
+  (state) => state.token
 );
