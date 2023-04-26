@@ -16,6 +16,9 @@ export enum AuthActionTypes {
   SendCode = '[Auth] SendCode ',
   SendCode_FAILURE = '[Auth] SendCode FAILURE',
   SendCode_SUCCESS = '[Auth] SendCode SUCCESS',
+  ReSendCode = '[Auth] ReSendCode',
+  ReSendCode_FAILURE = '[Auth] ReSendCode_FAILURE',
+  ReSendCode_SUCCESS = '[Auth] ReSendCode_SUCCESS',
 
 
 }
@@ -89,21 +92,50 @@ export class VerifyPhone_FAILURE implements Action {
 
   constructor(public payload: any) {
   }
-}export class SendCode implements Action {
+}
+
+export class SendCode implements Action {
   readonly type = AuthActionTypes.SendCode;
 
   constructor(public payload: any) {
   }
-}export class SendCode_FAILURE implements Action {
+}
+
+export class SendCode_FAILURE implements Action {
   readonly type = AuthActionTypes.SendCode_FAILURE;
 
   constructor(public payload: any) {
   }
-}export class SendCode_SUCCESS implements Action {
+}
+
+export class SendCode_SUCCESS implements Action {
   readonly type = AuthActionTypes.SendCode_SUCCESS;
 
   constructor(public payload: any) {
   }
+}
+
+export class ReSendCode implements Action {
+  readonly type = AuthActionTypes.ReSendCode;
+  constructor(public payload: any) {
+  }
+
+}
+
+export class ReSendCode_SUCCESS implements Action {
+  readonly type = AuthActionTypes.ReSendCode_SUCCESS;
+
+  constructor(public payload: any) {
+  }
+
+}
+
+export class ReSendCode_FAILURE implements Action {
+  readonly type = AuthActionTypes.ReSendCode_FAILURE;
+
+  constructor(public payload: any) {
+  }
+
 }
 
 
@@ -122,4 +154,7 @@ export type AuthActions =
   | SendCode
   | SendCode_FAILURE
   | SendCode_SUCCESS
+  | ReSendCode
+  | ReSendCode_SUCCESS
+  | ReSendCode_FAILURE
   ;

@@ -53,6 +53,7 @@ import {HTTP_INTERCEPTORS, HttpClientXsrfModule} from "@angular/common/http";
 import {ToastComponent} from "./includes/components/toast/toast.component";
 import {ToasterComponent} from "./includes/components/toaster/toaster.component";
 import {AuthenticationService} from "./authentication/services/authentication.service";
+import {effectsModule, store} from "./state";
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true,
@@ -98,6 +99,8 @@ const APP_CONTAINERS = [
       cookieName: 'csrftoken',
       headerName: 'X-CSRFToken',
     }),
+    effectsModule,
+    store,
   ],
   providers: [
     AuthenticationService,

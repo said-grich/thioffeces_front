@@ -21,16 +21,17 @@ import {ToastComponent} from "../includes/components/toast/toast.component";
 import {ToasterComponent} from "../includes/components/toaster/toaster.component";
 import {StoreModule} from "@ngrx/store";
 import { SendVerificationCodeComponent } from './components/send-verification-code/send-verification-code.component';
+import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
+import { ProfileComponent } from './components/profile/profile.component';
+import {AuthenticationRoutingModule} from "./authentication-routing.module";
 
 
 
 
 @NgModule({
-  declarations: [LogInComponent, SignUpComponent, VerifyPhoneComponent, SendVerificationCodeComponent],
+  declarations: [LogInComponent, SignUpComponent, VerifyPhoneComponent, SendVerificationCodeComponent, ForgotPasswordComponent, ProfileComponent],
   imports: [
     CommonModule,
-    CommonModule,
-    PagesRoutingModule,
     CardModule,
     ButtonModule,
     GridModule,
@@ -38,11 +39,10 @@ import { SendVerificationCodeComponent } from './components/send-verification-co
     FormModule,
     ReactiveFormsModule,
     HttpClientModule,
-    effectsModule,
-    store,
     AlertModule,
     SpinnerModule,
-    StoreModule.forRoot(reducers, { metaReducers })
+    AuthenticationRoutingModule
+
   ]
 })
 export class AuthenticationModule { }

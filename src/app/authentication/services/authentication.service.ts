@@ -16,13 +16,10 @@ export class AuthenticationService {
   private readonly apiUrl = 'http://127.0.0.1:8000/api';
   private readonly refreshUrl = `${this.apiUrl}/refresh`;
   private _phone_number:any;
-
   constructor(private http: HttpClient, private store: Store<fromAuth.AuthState>,) {
-
   }
 
   signup(user: User): Observable<any> {
-    console.log("This SingUp ---------------")
 
     return this.http.post(`${this.apiUrl}/register`, user);
   }
@@ -36,9 +33,11 @@ export class AuthenticationService {
   }
 
   verifyPhone(body: any) {
-    return this.http.post(`${this.apiUrl}/verify_phone/check/`, body)
+    return this.http.post(`${this.apiUrl}/verify_phone/check/`,body)
   }
-
+  resendCode(body:any){
+    return this.http.post(`${this.apiUrl}/resend/`,body)
+  }
 
   get phone_number(): any {
     return this._phone_number;

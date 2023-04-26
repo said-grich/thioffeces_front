@@ -1,0 +1,130 @@
+<c-container class="container-fluid rounded bg-white">
+  <c-row class="row">
+    <c-col md="3" class="border-right">
+      <div class="d-flex flex-column align-items-center text-center p-3 py-5"><img class="rounded-circle mt-5"
+                                                                                   width="150px"
+                                                                                   src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"><span
+      class="h5">{{ (group$ | async)?.name }}</span>
+        <span class="text-black-50">{{(currentUser$| async)?.name}}</span>
+
+        <span>{{(currentUser$| async)?.bio}}</span>
+      </div>
+    </c-col>
+    <div class="col-md-9 border-right">
+      <div class="p-3 py-5">
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h4 class="text-right">Profile Settings</h4>
+        </div>
+        <form [formGroup]="profileForm">
+
+          <div class="row mt-2">
+
+            <div *ngIf="profileForm.controls['name'] as ctrl">
+
+              <label class="labels">Name</label>
+              <input cFormControl type="text" class="form-control" placeholder="full name"
+                     formControlName="name"
+                     [autofocus]="true"
+                     [valid]="
+              ctrl.touched && ctrl.valid
+                ? true
+                : (submitted || ctrl.touched) && ctrl.invalid
+                ? false
+                : undefined
+            "
+              >
+              <c-form-feedback *ngIf="submitted || ctrl.invalid" [valid]="!(submitted || ctrl.invalid)">
+                <ng-container *ngIf="ctrl.errors as errors">
+                  <div *ngIf="errors.required">{{formErrors["name"]["required"]}}</div>
+                </ng-container>
+              </c-form-feedback>
+            </div>
+          </div>
+          <div class="row mt-8">
+            <div class="col-md-12" *ngIf="profileForm.controls['phone_number'] as ctrl">
+
+              <label class="labels">Phone Number</label>
+              <input cFormControl type="text" class="form-control"
+                     placeholder="enter phone number"
+                     formControlName="phone_number"
+                     [autofocus]="true"
+                     [valid]="
+              ctrl.touched && ctrl.valid
+                ? true
+                : (submitted || ctrl.touched) && ctrl.invalid
+                ? false
+                : undefined
+            "
+                     [disabled]="true">
+            </div>
+            <div  class="mb-3 col-md-12" *ngIf="profileForm.controls['email'] as ctrl">
+            <label class="labels">Email</label>
+              <input name="email" formControlName="email" cFormControl placeholder="Email"
+                     [autofocus]="true"
+                     [valid]="
+              ctrl.touched && ctrl.valid
+                ? true
+                : (submitted || ctrl.touched) && ctrl.invalid
+                ? false
+                : undefined
+            "
+              />
+              <c-form-feedback *ngIf="submitted || ctrl.invalid" [valid]="!(submitted || ctrl.invalid)">
+                <ng-container *ngIf="ctrl.errors as errors">
+                  <div *ngIf="errors.required">                   {{formErrors["email"]["required"]}}</div>
+                </ng-container>
+                <ng-container *ngIf="ctrl.errors as errors">
+                  <div *ngIf="errors.pattern">{{formErrors["email"]["email"]}}</div>
+                </ng-container>
+              </c-form-feedback>
+            </div>
+
+            <div class="mb-3" *ngIf="profileForm.controls['id_number'] as ctrl">
+              <label class="labels">Identity number</label>
+
+              <input name="id_number" formControlName="id_number" cFormControl placeholder="Identity number"
+                     [autofocus]="true"
+                     [valid]="
+              ctrl.touched && ctrl.valid
+                ? true
+                : (submitted || ctrl.touched) && ctrl.invalid
+                ? false
+                : undefined
+            "/>
+            </div>
+
+            <div class="mb-3" *ngIf="profileForm.controls['address'] as ctrl">
+              <label class="labels">Address</label>
+
+              <input name="address" cFormControl formControlName="address" placeholder="Address"
+                     [autofocus]="true"
+                     [valid]="
+              ctrl.touched && ctrl.valid
+                ? true
+                : (submitted || ctrl.touched) && ctrl.invalid
+                ? false
+                : undefined
+            "
+              />
+            </div>
+            <div class="mb-3"  *ngIf="profileForm.controls['bio'] as ctrl">
+              <label cLabel for="bio">Bio</label>
+              <textarea cFormControl id="bio" rows="3" formControlName="bio"  [autofocus]="true"
+                        [valid]="
+              ctrl.touched && ctrl.valid
+                ? true
+                : (submitted || ctrl.touched) && ctrl.invalid
+                ? false
+                : undefined
+            "></textarea>
+            </div>
+          </div>
+          <div class="mt-5 text-center">
+            <button class="btn btn-primary profile-button" type="button">Save Profile</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </c-row>
+</c-container>

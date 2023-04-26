@@ -107,6 +107,25 @@ initialLoginForm(){
       asyncValidators: PasswordValidators.confirmPassword
     }, );
   }
+  initProfileForm(user:User){
+ return    this.fb.group({
+      name: [user.name, [
+        Validators.required,
+        Validators.minLength(this.formRules.usernameMin),
+        Validators.pattern(this.formRules.nonEmpty)
+      ]],
+      email: [user.email, [Validators.required, Validators.email]],
+      id_number: [user.id_number, Validators.required],
+      address: [user.address, Validators.required],
+      phone_number: [{ value:"+"+user.country_code+user.phone_number,disabled: true } ,[
+        Validators.required,
+      ] ,],
+      user_type: [user.group, Validators.required],
+      image:[user.image,Validators.required],
+   bio:[user.bio,Validators.required]
+      }, );
+
+  }
 
 
 

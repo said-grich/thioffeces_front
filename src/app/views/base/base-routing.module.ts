@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { AccordionsComponent } from './accordion/accordions.component';
 import { BreadcrumbsComponent } from './breadcrumbs/breadcrumbs.component';
 import { CardsComponent } from './cards/cards.component';
 import { CarouselsComponent } from './carousels/carousels.component';
@@ -16,26 +15,30 @@ import { TablesComponent } from './tables/tables.component';
 import { TooltipsComponent } from './tooltips/tooltips.component';
 import { TabsComponent } from './tabs/tabs.component';
 import { PlaceholdersComponent } from './placeholders/placeholders.component';
+import {ProfileComponent} from "../../authentication/components/profile/profile.component";
 
 const routes: Routes = [
+
   {
-    path: '',
-    data: {
-      title: 'Base',
-    },
+      path: '',
+      data: {
+        title: 'Base',
+      },
     children: [
       {
         path: '',
         pathMatch: 'full',
         redirectTo: 'cards',
       },
+
       {
-        path: 'accordion',
-        component: AccordionsComponent,
+        path: 'profile',
+        component: ProfileComponent,
         data: {
           title: 'Accordion',
         },
       },
+
       {
         path: 'breadcrumbs',
         component: BreadcrumbsComponent,

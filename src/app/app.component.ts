@@ -23,10 +23,10 @@ import {ClearMsg} from "./actions/toastActions";
 
 @Component({
   selector: 'app-root',
-  template: '<app-toaster></app-toaster> <router-outlet></router-outlet>',
+  template: '<app-toaster></app-toaster><router-outlet></router-outlet>',
 })
 export class AppComponent implements OnInit {
-  title = 'CoreUI Free Angular Admin Template';
+  title = 'ThiOffices';
   // @ts-ignore
   error$ = this.store.pipe(select(getError));
   // @ts-ignore
@@ -55,9 +55,7 @@ export class AppComponent implements OnInit {
     iconSetService.icons = {...iconSubset};
 
   }
-
   ngOnInit(): void {
-
     this.successMsg$.subscribe(
       value => {
         if (value) {
@@ -79,17 +77,19 @@ export class AppComponent implements OnInit {
       if (authenticated) {
         this.isPhoneVerified$.subscribe(phoneVerified => {
           if (!phoneVerified) {
-            // Show a message to the user indicating that they need to verify their phone number
             this.router.navigate(["/send-code"])
           }
         });
+      }else{
+        this.router.navigate(["/login"])
       }
     });
+
+
     this.router.events.subscribe((evt) => {
       if (!(evt instanceof NavigationEnd)) {
         this.store.dispatch(new ClearError());
         this.store.dispatch(new ClearMsg());
-
       }
     });
   }

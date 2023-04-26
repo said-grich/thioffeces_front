@@ -42,8 +42,11 @@
                   </c-form-feedback>
                 </c-input-group>
                 <c-row class="justify-content-center ">
-                  <c-col class="text-center">
+                  <c-col class="text-center" xs="6">
                     <button cButton class="px-4" color="primary" type="submit">Verify</button>
+                  </c-col>
+                  <c-col class="text-center" xs="6">
+                    <button cButton class="px-0" color="link" (click)="onResendCode()">Resend Code</button>
                   </c-col>
                 </c-row>
               </form>

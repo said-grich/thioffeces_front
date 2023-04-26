@@ -35,5 +35,6 @@ export const effects = [
   AuthEffects,
 ];
 
-export const store = StoreModule.forRoot(reducers, {});
+export const store = StoreModule.forRoot(reducers, {metaReducers});
+
 export const effectsModule = EffectsModule.forRoot(effects);

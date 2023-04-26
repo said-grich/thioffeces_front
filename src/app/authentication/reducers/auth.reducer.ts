@@ -1,6 +1,8 @@
 import {AuthActions, AuthActionTypes} from '../actions/auth.actions';
 import {User} from "../models/user_model";
 import {createSelector} from "@ngrx/store";
+import {flagSet} from "@coreui/icons";
+import {Group} from "../models/group-model";
 
 export interface AuthState {
   loading: boolean;
@@ -11,6 +13,8 @@ export interface AuthState {
   is_active: boolean;
   token: string | null;
   refresh_token: string | null;
+  group:Group|null
+  permissions:Permissions[]
 }
 
 const initialState: AuthState = {
@@ -22,6 +26,8 @@ const initialState: AuthState = {
   is_active: false,
   token: null,
   refresh_token: null,
+  group:null,
+  permissions:[]
 };
 
 export function authReducer(
@@ -64,7 +70,9 @@ export function authReducer(
         is_active: action.payload["is_active"],
         token: action.payload["access_token"],
         refresh_token: action.payload["refresh_token"],
-        user: action.payload["user"]
+        user: action.payload["user"],
+        group:action.payload["group"],
+        permissions:action.payload["permissions"]
       };
     case AuthActionTypes.LOGIN_FAILURE:
       return {
@@ -81,7 +89,8 @@ export function authReducer(
         is_phone_verified: false,
         is_active: false,
         token: null,
-        refresh_token: null
+        refresh_token: null,
+        group: null
 
       };
     case AuthActionTypes.ClearError:
@@ -126,6 +135,26 @@ export function authReducer(
         error: action.payload["error"],
       };
 
+    case AuthActionTypes.ReSendCode:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+      };
+
+    case AuthActionTypes.ReSendCode_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        error: null,
+      };
+    case AuthActionTypes.ReSendCode_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload["error"],
+      };
+
     default:
       return state;
   }
@@ -157,7 +186,15 @@ export const getUser = createSelector(
   selectAuthState,
   (state) => state.user
 );
-export const getToken= createSelector(
+export const getToken = createSelector(
   selectAuthState,
   (state) => state.token
+);
+export const getGroup = createSelector(
+  selectAuthState,
+  (state) => state.group
+);
+export const getPermissions = createSelector(
+  selectAuthState,
+  (state) => state.group
 );

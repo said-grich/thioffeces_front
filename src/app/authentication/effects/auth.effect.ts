@@ -16,7 +16,7 @@ import {
   SendCode_SUCCESS,
   SendCode_FAILURE,
   Login,
-  SendCode, VerifyPhone
+  SendCode, VerifyPhone, ReSendCode, ReSendCode_SUCCESS, ReSendCode_FAILURE
 } from '../actions/auth.actions';
 import {NavigationExtras, Router} from "@angular/router";
 import {HttpErrorResponse, HttpResponse} from "@angular/common/http";
@@ -79,6 +79,10 @@ export class AuthEffects {
     this.actions$.pipe(
       ofType<SignupSuccess>(AuthActionTypes.SIGNUP_SUCCESS),
       tap(() => {
+        this.store.dispatch(new SuccessToast({
+          "title": "SingUp Successful",
+          "body": "Thank you for signing up. Please login and confirm your phone number to activate your account."
+        }));
         this.router.navigate(['/login']);
       })
     ), {dispatch: false}
@@ -159,21 +163,15 @@ export class AuthEffects {
     this.actions$.pipe(
       ofType<SendCode_SUCCESS>(AuthActionTypes.SendCode_SUCCESS),
       tap((action) => {
-        this.isPhoneVerified.subscribe(
-          isPhoneVerified => {
-            this.store.dispatch(new SuccessToast({
-              "title": "Verification Code Send Successful",
-              "body": "Verification Code Send Successful"
-            }));
-            if (!isPhoneVerified) {
+        this.store.dispatch(new SuccessToast({
+          "title": "Verification Code Send Successful",
+          "body": "Verification Code Send Successful"
+        }));
 
-              this.router.navigate(['/verify-phone'])
 
-            } else {
-              this.router.navigate(['/']);
-            }
-          }
-        )
+        this.router.navigate(['/verify-phone'])
+
+
       })
     ), {dispatch: false}
   );
@@ -185,7 +183,6 @@ export class AuthEffects {
       switchMap((action) =>
         this.authService.verifyPhone(action.payload).pipe(
           map((response: any) => {
-            console.log(response, "Rs")
             return new VerifyPhone_SUCCESS(response);
           }),
           catchError((error) => {
@@ -212,10 +209,39 @@ export class AuthEffects {
             "body": "Phone Verified With Success"
           }));
           this.router.navigate(["/"])
-        } else {
-          this.store.dispatch(new ErrorToast({
-            "title": "Phone Verified With ERRor",
-            "body": "Phone Verified With Error"
+        }
+      })
+    ), {dispatch: false}
+  );
+
+  reSendCode$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType<ReSendCode>(AuthActionTypes.ReSendCode),
+      switchMap((action) =>
+        this.authService.resendCode(action.payload).pipe(
+          map((response: any) => {
+            return new ReSendCode_SUCCESS(response);
+          }),
+          catchError((error) => {
+            console.error(error)
+            let errorMsg: string[] | unknown[] = ['An unknown error occurred.'];
+            if (error.error) {
+              errorMsg = Object.values(error.error).flat();
+            }
+            return of(new ReSendCode_FAILURE({error: errorMsg}));
+          })
+        )
+      )
+    )
+  );
+  resendCodeSUCCESS$: Observable<AuthActions> = createEffect(() =>
+    this.actions$.pipe(
+      ofType<ReSendCode_SUCCESS>(AuthActionTypes.ReSendCode_SUCCESS),
+      tap((action) => {
+        if (action.payload["success"] == true) {
+          this.store.dispatch(new SuccessToast({
+            "title": "Phone Verified With Success",
+            "body": action.payload["msg"]
           }));
         }
       })

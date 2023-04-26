@@ -10,14 +10,17 @@ import {VerifyPhoneComponent} from "./authentication/components/verify-phone/ver
 import {
   SendVerificationCodeComponent
 } from "./authentication/components/send-verification-code/send-verification-code.component";
+import {ForgotPasswordComponent} from "./authentication/components/forgot-password/forgot-password.component";
 
 const routes: Routes = [
+
   {
     path: '',
     redirectTo: 'dashboard',
 
     pathMatch: 'full'
   },
+
   {
     path: '',
     component: DefaultLayoutComponent,
@@ -39,6 +42,11 @@ const routes: Routes = [
         path: 'base',
         loadChildren: () =>
           import('./views/base/base.module').then((m) => m.BaseModule)
+      },
+      {
+        path: 'user',
+        loadChildren: () =>
+          import('./authentication/authentication.module').then((m) => m.AuthenticationModule)
       },
       {
         path: 'buttons',
@@ -75,11 +83,6 @@ const routes: Routes = [
         loadChildren: () =>
           import('./views/pages/pages.module').then((m) => m.PagesModule)
       },
-      {
-        path: 'authentication',
-        loadChildren: () =>
-          import('./authentication/authentication.module').then((m) => m.AuthenticationModule)
-      },
     ]
   },
 
@@ -99,14 +102,20 @@ const routes: Routes = [
   },
   { path: 'send-code', component: SendVerificationCodeComponent ,
     data:{
-      title: 'login page'
+      title: 'Send code'
     }
   },
   { path: 'verify-phone', component: VerifyPhoneComponent ,
     data:{
-      title: 'login page'
+      title: 'verify phone'
     }
   },
+  { path: 'forgot-password', component: ForgotPasswordComponent ,
+    data:{
+      title: 'forgot-password'
+    }
+  },
+
 
 
   {

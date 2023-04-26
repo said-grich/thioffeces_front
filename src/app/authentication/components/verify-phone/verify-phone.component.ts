@@ -6,7 +6,7 @@ import {Observable} from "rxjs";
 import {select, Store} from "@ngrx/store";
 import {getError, getIsAuthenticated, getIsPhoneVerified, getLoading} from "../../reducers/auth.reducer";
 import * as fromAuth from "../../reducers/auth.reducer";
-import {VerifyPhone} from "../../actions/auth.actions";
+import {ReSendCode, VerifyPhone} from "../../actions/auth.actions";
 import {AppState} from "../../../state";
 
 @Component({
@@ -16,7 +16,6 @@ import {AppState} from "../../../state";
 })
 export class VerifyPhoneComponent {
   phone_number:any;
-
   verifyForm: FormGroup;
   submitted = false;
   // @ts-ignore
@@ -97,6 +96,9 @@ this.phone_number=this.authService.phone_number;
   }
 
   onResendCode() {
-    console.log("resent code")
+    let payload={
+      "phone_number":this.phone_number["phone_number"],
+    }
+    this.store.dispatch(new ReSendCode(payload))
   }
 }
