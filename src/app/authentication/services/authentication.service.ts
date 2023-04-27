@@ -12,8 +12,8 @@ import {getToken} from "../reducers/auth.reducer";
 })
 export class AuthenticationService {
 
-  // private readonly apiUrl = 'https://thioffeces.herokuapp.com/api';
-  private readonly apiUrl = 'http://127.0.0.1:8000/api';
+  private readonly apiUrl = 'https://thioffeces.herokuapp.com/api';
+  // private readonly apiUrl = 'http://127.0.0.1:8000/api';
   private readonly refreshUrl = `${this.apiUrl}/refresh`;
   private _phone_number:any;
   constructor(private http: HttpClient, private store: Store<fromAuth.AuthState>,) {
